@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema de Citas - Sonrisa Sana</title>
+  <link rel="stylesheet" href="../css/diseño.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <h1>Sistema de Citas - Sonrisa Sana</h1>
+    <p class="header-subtitle">Gestión integral de citas dentales</p>
+  </header>
+
+  <!-- Navegación -->
+  <nav class="nav">
+    <a href="#" class="nav-link active" data-view="inicio">
+      <i class="fas fa-home"></i>
+      <span>Inicio</span>
+    </a>
+    <a href="#" class="nav-link" data-view="registro">
+      <i class="fas fa-user-plus"></i>
+      <span>Registro</span>
+    </a>
+    <a href="#" class="nav-link" data-view="consultar">
+      <i class="fas fa-search"></i>
+      <span>Consultar</span>
+    </a>
+    <a href="#" class="nav-link" data-view="agendar">
+      <i class="fas fa-calendar-alt"></i>
+      <span>Agendar Cita</span>
+    </a>
+    <a href="#" class="nav-link" data-view="citas-dia">
+      <i class="fas fa-calendar-check"></i>
+      <span>Citas del Día</span>
+    </a>
+  </nav>
+
+  <main class="main">
+    <!-- Vista: Inicio -->
+    <section id="view-inicio" class="view active">
+      <div class="date-box">
+        <i class="far fa-clock"></i>
+        <span id="fecha-actual"></span>
+      </div>
+      <div class="cards-row">
+        <div class="card card-blue">
+          <div class="card-header">
+            <i class="fas fa-calendar-alt"></i>
+            <span>Citas del Día</span>
+          </div>
+          <div class="card-value" id="stat-citas-dia">0</div>
+          <div class="card-sub">citas programadas hoy</div>
+        </div>
+        <div class="card card-green">
+          <div class="card-header">
+            <i class="fas fa-users"></i>
+            <span>Pacientes Registrados</span>
+          </div>
+          <div class="card-value" id="stat-pacientes">0</div>
+          <div class="card-sub">pacientes activos</div>
+        </div>
+        <div class="card card-blue-dark">
+          <div class="card-header">
+            <i class="fas fa-calendar-alt"></i>
+            <span>Próxima Cita</span>
+          </div>
+          <div class="card-value card-value-text" id="stat-proxima">No hay citas pendientes</div>
+        </div>
+      </div>
+      <div class="quick-actions">
+        <h2>Acciones Rápidas</h2>
+        <p class="quick-actions-sub">Selecciona una opción para continuar</p>
+        <div class="quick-buttons">
+          <button type="button" class="btn-quick btn-quick-blue" data-goto="registro">
+            <i class="fas fa-user-plus"></i>
+            <span>Registrar Paciente</span>
+          </button>
+          <button type="button" class="btn-quick btn-quick-green" data-goto="agendar">
+            <i class="fas fa-calendar-alt"></i>
+            <span>Agendar Cita</span>
+          </button>
+          <button type="button" class="btn-quick btn-quick-dark" data-goto="citas-dia">
+            <i class="fas fa-calendar-check"></i>
+            <span>Ver Citas del Día</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Vista: Registro -->
+    <section id="view-registro" class="view">
+      <h2 class="page-title">Registro de Pacientes</h2>
+      <p class="page-subtitle">Agrega nuevos pacientes al sistema</p>
+      <div class="panel">
+        <h3 class="panel-title"><i class="fas fa-user-plus"></i> Nuevo Paciente</h3>
+        <p class="panel-desc">Completa la información para registrar un nuevo paciente</p>
+        <form id="form-paciente" class="form">
+          <div class="form-group">
+            <label for="paciente-nombre">Nombre Completo</label>
+            <input type="text" id="paciente-nombre" placeholder="Ej: Juan Pérez García" required>
+          </div>
+          <div class="form-group">
+            <label for="paciente-telefono">Teléfono</label>
+            <input type="text" id="paciente-telefono" placeholder="Ej: 555-1234" required>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Guardar Paciente</button>
+            <button type="button" class="btn btn-secondary" id="btn-cancelar-paciente">Cancelar</button>
+          </div>
+        </form>
+      </div>
+      <div class="panel">
+        <div class="panel-header-flex">
+          <div>
+            <h3 class="panel-title">Últimos Pacientes Registrados</h3>
+            <p class="panel-desc" id="registro-resumen">Mostrando los 0 más recientes de 0 totales</p>
+          </div>
+          <a href="#" class="link-ver" data-view="consultar">Ver todos y buscar <i class="fas fa-arrow-right"></i></a>
+        </div>
+        <div class="table-wrap">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Nombre Completo</th>
+                <th>Teléfono</th>
+                <th class="th-actions">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="tabla-ultimos-pacientes"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Vista: Consultar -->
+    <section id="view-consultar" class="view">
+      <h2 class="page-title">Consultar Pacientes</h2>
+      <p class="page-subtitle">Busca pacientes por número de teléfono o nombre para editar o eliminar sus datos.</p>
+      <div class="panel">
+        <h3 class="panel-title">Búsqueda de Pacientes</h3>
+        <p class="panel-desc">Ingresa el número de teléfono o nombre del paciente</p>
+        <div class="search-wrap">
+          <i class="fas fa-search"></i>
+          <input type="text" id="buscar-paciente" placeholder="Buscar por teléfono (ej: 555-1234)...">
+        </div>
+        <div class="table-wrap">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Nombre Completo</th>
+                <th>Teléfono</th>
+                <th class="th-actions">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="tabla-consultar-pacientes"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Vista: Agendar Cita -->
+    <section id="view-agendar" class="view">
+      <h2 class="page-title">Agendar Cita</h2>
+      <p class="page-subtitle">Programa una nueva cita para un paciente</p>
+      <div class="panel">
+        <h3 class="panel-title"><i class="fas fa-calendar-alt"></i> Nueva Cita</h3>
+        <p class="panel-desc">Selecciona el paciente, fecha y hora</p>
+        <form id="form-cita" class="form">
+          <div class="form-group">
+            <label for="cita-paciente">Seleccionar Paciente</label>
+            <div class="select-wrap">
+              <select id="cita-paciente" required>
+                <option value="">Selecciona un paciente</option>
+              </select>
+              <i class="fas fa-chevron-down"></i>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="cita-fecha">Fecha</label>
+              <div class="input-icon-wrap">
+                <input type="date" id="cita-fecha" required>
+                <i class="far fa-calendar-alt"></i>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="cita-hora">Hora</label>
+              <div class="select-wrap">
+                <select id="cita-hora" required>
+                  <option value="">Selecciona una hora</option>
+                </select>
+                <i class="fas fa-chevron-down"></i>
+              </div>
+            </div>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn btn-green">Agendar Cita</button>
+            <button type="button" class="btn btn-secondary" id="btn-cancelar-cita">Cancelar</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- Vista: Citas del Día -->
+    <section id="view-citas-dia" class="view">
+      <h2 class="page-title">Citas del Día</h2>
+      <p class="page-subtitle">Visualiza y gestiona las citas programadas</p>
+      <div class="panel">
+        <h3 class="panel-title"><i class="fas fa-calendar-alt"></i> Seleccionar Fecha</h3>
+        <div class="fecha-selector">
+          <div class="form-group">
+            <label for="citas-dia-fecha">Fecha</label>
+            <div class="input-icon-wrap">
+              <input type="date" id="citas-dia-fecha">
+              <i class="far fa-calendar-alt"></i>
+            </div>
+          </div>
+          <span class="fecha-texto" id="citas-dia-fecha-texto"></span>
+        </div>
+      </div>
+      <div class="panel">
+        <h3 class="panel-title"><i class="fas fa-calendar-check"></i> Citas Programadas</h3>
+        <p class="panel-desc" id="citas-dia-resumen">0 citas para esta fecha</p>
+        <div class="table-wrap">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Hora</th>
+                <th>Nombre del Paciente</th>
+                <th>Teléfono</th>
+                <th class="th-actions">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="tabla-citas-dia"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Modal editar paciente (oculto) -->
+  <div id="modal-editar-paciente" class="modal hidden">
+    <div class="modal-content">
+      <h3>Editar Paciente</h3>
+      <form id="form-editar-paciente">
+        <input type="hidden" id="editar-paciente-id">
+        <div class="form-group">
+          <label for="editar-paciente-nombre">Nombre Completo</label>
+          <input type="text" id="editar-paciente-nombre" required>
+        </div>
+        <div class="form-group">
+          <label for="editar-paciente-telefono">Teléfono</label>
+          <input type="text" id="editar-paciente-telefono" required>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Guardar</button>
+          <button type="button" class="btn btn-secondary" id="btn-cerrar-modal-editar">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal editar cita (oculto) -->
+  <div id="modal-editar-cita" class="modal hidden">
+    <div class="modal-content">
+      <h3>Editar Cita</h3>
+      <form id="form-editar-cita">
+        <input type="hidden" id="editar-cita-id">
+        <div class="form-group">
+          <label for="editar-cita-paciente">Paciente</label>
+          <div class="select-wrap">
+            <select id="editar-cita-paciente" required></select>
+            <i class="fas fa-chevron-down"></i>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="editar-cita-fecha">Fecha</label>
+            <input type="date" id="editar-cita-fecha" required>
+          </div>
+          <div class="form-group">
+            <label for="editar-cita-hora">Hora</label>
+            <div class="select-wrap">
+              <select id="editar-cita-hora" required></select>
+              <i class="fas fa-chevron-down"></i>
+            </div>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-green">Guardar</button>
+          <button type="button" class="btn btn-secondary" id="btn-cerrar-modal-cita">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="../js/app.js"></script>
+</body>
+</html>
